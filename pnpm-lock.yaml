@@ -44,6 +44,9 @@ importers:
       '@synapse/ai':
         specifier: workspace:*
         version: link:../../packages/ai
+      '@synapse/animation':
+        specifier: workspace:*
+        version: link:../../packages/animation
       '@synapse/camera':
         specifier: workspace:*
         version: link:../../packages/camera
@@ -68,9 +71,15 @@ importers:
       '@synapse/utils':
         specifier: workspace:*
         version: link:../../packages/utils
+      '@synapse/world':
+        specifier: workspace:*
+        version: link:../../packages/world
       '@tanstack/react-query':
         specifier: ^5.101.1
         version: 5.101.1(react@19.2.7)
+      lenis:
+        specifier: ^1.3.4
+        version: 1.3.25(react@19.2.7)
       next:
         specifier: ^16.2.9
         version: 16.2.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -109,7 +118,17 @@ importers:
         specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
 
-  packages/animation: {}
+  packages/animation:
+    dependencies:
+      '@synapse/config':
+        specifier: workspace:*
+        version: link:../config
+      '@synapse/types':
+        specifier: workspace:*
+        version: link:../types
+      gsap:
+        specifier: ^3.13.0
+        version: 3.15.0
 
   packages/assets: {}
 
@@ -170,7 +189,21 @@ importers:
         specifier: ^0.185.0
         version: 0.185.0
 
-  packages/particles: {}
+  packages/particles:
+    dependencies:
+      '@synapse/shaders':
+        specifier: workspace:*
+        version: link:../shaders
+      '@synapse/types':
+        specifier: workspace:*
+        version: link:../types
+    devDependencies:
+      '@types/three':
+        specifier: ^0.185.0
+        version: 0.185.0
+      three:
+        specifier: ^0.185.0
+        version: 0.185.0
 
   packages/renderer:
     dependencies:
@@ -186,6 +219,9 @@ importers:
       '@synapse/materials':
         specifier: workspace:*
         version: link:../materials
+      '@synapse/particles':
+        specifier: workspace:*
+        version: link:../particles
       '@synapse/shaders':
         specifier: workspace:*
         version: link:../shaders
@@ -236,6 +272,9 @@ importers:
       '@synapse/materials':
         specifier: workspace:*
         version: link:../materials
+      '@synapse/particles':
+        specifier: workspace:*
+        version: link:../particles
       '@synapse/types':
         specifier: workspace:*
         version: link:../types
@@ -1005,6 +1044,9 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
+  gsap@3.15.0:
+    resolution: {integrity: sha512-dMW4CWBTUK1AEEDeZc1g4xpPGIrSf9fJF960qbTZmN/QwZIWY5wgliS6JWl9/25fpTGJrMRtSjGtOmPnfjZB+A==}
+
   husky@9.1.7:
     resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
     engines: {node: '>=18'}
@@ -1060,6 +1102,20 @@ packages:
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
+
+  lenis@1.3.25:
+    resolution: {integrity: sha512-mOKxayErlaONK8fm4LN3XNd99Qu4plTpn9h9qf8wxzjGrJDzuD84FYzZ81HCd6ZsWp++VWVwOzL286Pf2s2u4A==}
+    peerDependencies:
+      '@nuxt/kit': '>=3.0.0'
+      react: '>=17.0.0'
+      vue: '>=3.0.0'
+    peerDependenciesMeta:
+      '@nuxt/kit':
+        optional: true
+      react:
+        optional: true
+      vue:
+        optional: true
 
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -2116,6 +2172,8 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
+  gsap@3.15.0: {}
+
   husky@9.1.7: {}
 
   ieee754@1.2.1: {}
@@ -2156,6 +2214,10 @@ snapshots:
   keyv@4.5.4:
     dependencies:
       json-buffer: 3.0.1
+
+  lenis@1.3.25(react@19.2.7):
+    optionalDependencies:
+      react: 19.2.7
 
   levn@0.4.1:
     dependencies:

@@ -1,14 +1,17 @@
 "use client";
 
+import { ScrollStage } from "../components/shell/ScrollStage";
 import { useExperienceStore } from "../hooks/use-experience";
 
 export default function HomePage() {
-  const worldPhase = useExperienceStore((state) => state.worldPhase);
+  const storyProgress = useExperienceStore((state) => state.storyProgress);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-3">
-      <p className="text-sm uppercase tracking-[0.4em] text-neutral-500">Synapse</p>
-      <p className="text-xs text-neutral-600">world phase: {worldPhase}</p>
-    </main>
+    <>
+      <ScrollStage />
+      <div className="pointer-events-none fixed bottom-6 left-6 z-40 font-mono text-[10px] text-neutral-600">
+        progress: {(storyProgress * 100).toFixed(0)}%
+      </div>
+    </>
   );
 }

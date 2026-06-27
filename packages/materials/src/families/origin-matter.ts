@@ -32,30 +32,31 @@ export const ORIGIN_MATTER_FAMILY: MaterialFamily = {
     const glow = new THREE.Color(tokens.glow);
 
     material.onBeforeCompile = (shader) => {
-      shader.uniforms.uTime = standard.uTime;
+      shader.uniforms.uBreath = standard.uBreath;
       shader.uniforms.uEnergy = standard.uEnergy;
       shader.uniforms.uGlowColor = { value: glow };
 
       shader.vertexShader =
-        "uniform float uTime;\nvarying vec3 vSynView;\nvarying vec3 vSynNormal;\n" +
+        "uniform float uBreath;\nvarying vec3 vSynView;\nvarying vec3 vSynNormal;\n" +
         shader.vertexShader.replace(
           "#include <begin_vertex>",
           [
-            "vec3 transformed = position * (1.0 + 0.012 * sin(uTime * 0.6));",
+            "float breathScale = 1.0 + 0.004 * (uBreath - 0.5) * 2.0;",
+            "vec3 transformed = position * breathScale;",
             "vSynNormal = normalize(normalMatrix * normal);",
             "vSynView = normalize(-(modelViewMatrix * vec4(transformed, 1.0)).xyz);",
           ].join("\n"),
         );
 
       shader.fragmentShader =
-        "uniform float uTime;\nuniform float uEnergy;\nuniform vec3 uGlowColor;\nvarying vec3 vSynView;\nvarying vec3 vSynNormal;\n" +
+        "uniform float uBreath;\nuniform float uEnergy;\nuniform vec3 uGlowColor;\nvarying vec3 vSynView;\nvarying vec3 vSynNormal;\n" +
         shader.fragmentShader.replace(
           "#include <emissivemap_fragment>",
           [
             "#include <emissivemap_fragment>",
             "float synRim = pow(1.0 - clamp(dot(normalize(vSynNormal), normalize(vSynView)), 0.0, 1.0), 2.5);",
             "totalEmissiveRadiance += uGlowColor * synRim * (1.0 + 0.6 * uEnergy);",
-            "totalEmissiveRadiance *= (0.7 + 0.3 * sin(uTime * 0.8));",
+            "totalEmissiveRadiance *= (0.7 + 0.3 * (uBreath - 0.5) * 2.0);",
           ].join("\n"),
         );
     };

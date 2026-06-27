@@ -2,8 +2,8 @@
  * @synapse/world
  *
  * The scene graph and districts: world root + layers, scene-object ownership,
- * the district manager, and the Origin Void district. Framework-light
- * (three.js + @synapse/materials only; no React).
+ * the district manager, environmental simulation, and the Origin Void district.
+ * Framework-light (three.js + @synapse/materials only; no React).
  */
 
 export {
@@ -28,4 +28,17 @@ export {
 } from "./districts/origin-void/origin-void.district";
 export { createOriginCore } from "./districts/origin-void/origin-core";
 export { createAtmosphereField } from "./districts/origin-void/atmosphere-field";
-export { createDustField, type DustFieldOptions } from "./districts/origin-void/dust-field";
+export { createVolumetricFogField } from "./districts/origin-void/volumetric-fog-field";
+
+export {
+  EnvironmentSimulator,
+  createEnvironmentSimulator,
+  type EnvironmentSimulatorInput,
+} from "./simulation/environment-simulator";
+export { WorldBreathing } from "./simulation/world-breathing";
+export { applyAtmosphericDrift } from "./simulation/atmospheric-drift";
+export {
+  createMutableEnvironmentalState,
+  snapshotEnvironment,
+  type MutableEnvironmentalState,
+} from "./simulation/environmental-state";

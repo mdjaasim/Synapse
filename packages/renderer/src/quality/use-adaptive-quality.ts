@@ -28,7 +28,7 @@ export function effectsForQuality(quality: QualityPreset): EffectFlags {
     case "high":
       return { bloom: true, vignette: true, smaa: true };
     case "balanced":
-      return { bloom: true, vignette: true, smaa: false };
+      return { bloom: true, vignette: true, smaa: true };
     case "low":
       return { bloom: false, vignette: true, smaa: false };
     default:

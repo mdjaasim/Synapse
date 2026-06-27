@@ -19,3 +19,14 @@ export {
   type CameraRigOptions,
 } from "./rig/camera-rig";
 export { ORIGIN_VOID_CAMERA, type CameraPreset } from "./rig/camera-presets";
+export {
+  createCameraPoseState,
+  snapshotPose,
+  type CameraPoseState,
+} from "./controller/camera-pose";
+export {
+  CameraController,
+  createCameraController,
+  type CameraControllerOptions,
+} from "./controller/camera-controller";
+export { createOriginVoidCameraChoreography } from "./choreography/origin-void.choreography";

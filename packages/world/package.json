@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@synapse/materials": "workspace:*",
+    "@synapse/particles": "workspace:*",
     "@synapse/types": "workspace:*"
   },
   "peerDependencies": {

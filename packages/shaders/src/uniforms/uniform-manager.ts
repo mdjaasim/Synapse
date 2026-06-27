@@ -1,9 +1,10 @@
 import type { Color } from "three";
-import { MOODS, QUALITY_PRESETS, type FrameState } from "@synapse/types";
+import { MOODS, QUALITY_PRESETS, type EnvironmentalState, type FrameState } from "@synapse/types";
 import { createStandardUniforms, type StandardUniforms } from "./standard-uniforms";
 
 export interface UniformUpdateInput {
   readonly frame: FrameState;
+  readonly environment: EnvironmentalState;
   /** Camera distance to the world origin, fed into uDistance. */
   readonly distance: number;
 }
@@ -23,7 +24,7 @@ export class UniformManager {
     this.uniforms = uniforms;
   }
 
-  update({ frame, distance }: UniformUpdateInput): void {
+  update({ frame, environment, distance }: UniformUpdateInput): void {
     const u = this.uniforms;
     u.uTime.value = frame.elapsed;
     u.uMood.value = MOODS.indexOf(frame.mood) / MOOD_DIVISOR;
@@ -34,6 +35,7 @@ export class UniformManager {
     u.uDistance.value = distance;
     u.uScroll.value = frame.scroll;
     u.uPerformance.value = QUALITY_PRESETS.indexOf(frame.quality) / QUALITY_DIVISOR;
+    u.uBreath.value = environment.breath;
   }
 }
 

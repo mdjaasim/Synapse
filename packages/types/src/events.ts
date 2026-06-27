@@ -24,6 +24,13 @@ export interface EventMap {
   "ai.conversationEnded": Record<string, never>;
   "ai.navigationRequested": { readonly districtId: DistrictId };
   "performance.fpsSampled": { readonly fps: number };
+  "animation.registered": { readonly id: string };
+  "animation.started": { readonly id: string };
+  "animation.completed": { readonly id: string };
+  "animation.interrupted": { readonly id: string };
+  "animation.reversed": { readonly id: string };
+  "animation.failed": { readonly id: string; readonly reason: string };
+  "animation.disposed": { readonly id: string };
 }
 
 export type EventName = keyof EventMap;

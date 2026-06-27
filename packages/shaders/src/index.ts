@@ -33,6 +33,7 @@ export {
 } from "./shaders/base.shader";
 export { ATMOSPHERE_SHADER } from "./shaders/atmosphere.shader";
 export { DUST_SHADER } from "./shaders/dust.shader";
+export { VOLUMETRIC_FOG_SHADER } from "./shaders/volumetric-fog.shader";
 
 export { composeGlsl, NOISE_GLSL, GLOW_GLSL, FOG_GLSL, COLOR_GLSL } from "./glsl";
 

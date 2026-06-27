@@ -1,5 +1,6 @@
 import type { Mood } from "@synapse/types";
 import type { MaterialFactory } from "@synapse/materials";
+import type { ParticleEngine } from "@synapse/particles";
 import type { SceneObject } from "../objects/scene-object";
 
 /** Static, automation-friendly description of a district (Doc 16). */
@@ -12,6 +13,7 @@ export interface DistrictMetadata {
 /** Dependencies a district needs to build its scene objects. */
 export interface DistrictContext {
   readonly materials: MaterialFactory;
+  readonly particles: ParticleEngine;
 }
 
 /**

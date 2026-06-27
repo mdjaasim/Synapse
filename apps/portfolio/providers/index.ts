@@ -6,3 +6,6 @@ export { useAccessibilityContext, type AccessibilityValue } from "./Accessibilit
 export { usePerformanceContext } from "./PerformanceProvider";
 export { useAIContext } from "./AIProvider";
 export { useAnalyticsContext } from "./AnalyticsProvider";
+export { useCameraContext } from "./CameraProvider";
+export { useAnimationContext } from "./AnimationProvider";
+export { useEnvironmentContext } from "./EnvironmentProvider";

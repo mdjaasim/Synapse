@@ -18,6 +18,7 @@
     "@react-three/postprocessing": "^3.0.4",
     "@synapse/camera": "workspace:*",
     "@synapse/materials": "workspace:*",
+    "@synapse/particles": "workspace:*",
     "@synapse/shaders": "workspace:*",
     "@synapse/types": "workspace:*",
     "@synapse/world": "workspace:*",

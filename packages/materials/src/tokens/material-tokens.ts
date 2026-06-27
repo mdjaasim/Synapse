@@ -50,3 +50,16 @@ export interface DustTokens {
 export const DUST_TOKENS: DustTokens = {
   color: "#9ab4ff",
 };
+
+export interface VolumetricFogTokens {
+  readonly inner: string;
+  readonly outer: string;
+  readonly density: number;
+}
+
+/** Volumetric fog shell: cool neutral void palette (Doc 17). */
+export const VOLUMETRIC_FOG_TOKENS: VolumetricFogTokens = {
+  inner: "#0a0e1c",
+  outer: "#02030a",
+  density: 0.5,
+};

@@ -15,6 +15,7 @@ export interface StandardUniforms {
   readonly uDistance: THREE.IUniform<number>;
   readonly uScroll: THREE.IUniform<number>;
   readonly uPerformance: THREE.IUniform<number>;
+  readonly uBreath: THREE.IUniform<number>;
   readonly uTheme: THREE.IUniform<THREE.Color>;
 }
 
@@ -34,6 +35,7 @@ export function createStandardUniforms(options: StandardUniformsOptions = {}): S
     uDistance: { value: 0 },
     uScroll: { value: 0 },
     uPerformance: { value: 1 },
+    uBreath: { value: 0.5 },
     uTheme: { value: options.themeColor ?? new THREE.Color("#5b8cff") },
   };
 }

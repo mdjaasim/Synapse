@@ -36,8 +36,8 @@ void main(){
   float h = clamp(vDir.y * 0.5 + 0.5, 0.0, 1.0);
   vec3 col = mix(uHorizon, uZenith, pow(h, 1.5));
   float band = smoothstep(0.55, 0.0, abs(vDir.y));
-  col += uTheme * band * 0.05;
-  col += (fbm(vDir * 3.0 + uTime * 0.02) - 0.5) * 0.015;
+  col += uTheme * band * (0.05 + uScroll * 0.004);
+  col += (fbm(vDir * 3.0 + uTime * 0.015) - 0.5) * 0.012;
   gl_FragColor = vec4(toSRGB(col), 1.0);
 }
 `,

@@ -5,6 +5,7 @@
 export const SHADER_IDS = {
   ATMOSPHERE: "atmosphere",
   DUST: "dust",
+  VOLUMETRIC_FOG: "volumetric-fog",
 } as const;
 
 export type ShaderId = (typeof SHADER_IDS)[keyof typeof SHADER_IDS];
