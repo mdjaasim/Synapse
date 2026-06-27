@@ -1,0 +1,16 @@
+{
+  "name": "@synapse/hooks",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Hooks — shared reusable React hooks.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit"
+  }
+}

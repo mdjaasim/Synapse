@@ -1,0 +1,10 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+allowBuilds:
+  sharp: set this to true or false
+
+# Dependencies whose install/build scripts are explicitly trusted to run.
+onlyBuiltDependencies:
+  - sharp

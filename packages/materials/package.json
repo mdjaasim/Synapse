@@ -1,0 +1,16 @@
+{
+  "name": "@synapse/materials",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Materials — material tokens, presets, rendering language, material factory.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit"
+  }
+}

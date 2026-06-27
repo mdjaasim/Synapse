@@ -1,0 +1,12 @@
+node_modules
+dist
+.next
+.turbo
+coverage
+pnpm-lock.yaml
+
+# Project specification documents (authored content — leave untouched)
+[0-9]*.md
+AGENTS.md
+CURSOR_PLAYBOOK.md
+START_HERE.md

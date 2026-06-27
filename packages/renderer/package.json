@@ -1,0 +1,16 @@
+{
+  "name": "@synapse/renderer",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Rendering — React Three Fiber canvas, lighting, post-processing, render loop, environment maps.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit"
+  }
+}
