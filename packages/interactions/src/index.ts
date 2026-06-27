@@ -1,9 +1,13 @@
 /**
  * @synapse/interactions
  *
- * Public entry point for the Interactions package.
- * Intentionally empty in Phase 0 (foundation only). Hover, focus, selection,
- * and input mapping are implemented in later phases.
+ * Interaction state ownership. Hover/focus/selection/cursor logic arrives in
+ * later phases; Phase 1 exposes the interaction store factory.
  */
 
-export {};
+export {
+  createInteractionStore,
+  type InteractionActions,
+  type InteractionStore,
+  type InteractionStoreState,
+} from "./stores/interaction.store";

@@ -1,9 +1,7 @@
 /**
  * @synapse/utils
  *
- * Public entry point for the Utils package.
- * Intentionally empty in Phase 0 (foundation only). Pure helper functions are
- * implemented in later phases.
+ * Pure helper functions. No business logic, no rendering, no side effects.
  */
 
-export {};
+export * from "./clamp";

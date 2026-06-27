@@ -2,6 +2,10 @@
 
 :root {
   color-scheme: dark;
+  --color-background: #05060a;
+  --color-foreground: #e6e8ef;
+  --color-muted: #9aa0b4;
+  --color-accent: #5b8cff;
 }
 
 html,
@@ -11,7 +15,7 @@ body {
 
 body {
   margin: 0;
-  background-color: #05060a;
-  color: #e6e8ef;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
   font-family: var(--font-inter), system-ui, sans-serif;
 }

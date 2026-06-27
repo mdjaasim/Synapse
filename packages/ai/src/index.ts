@@ -1,9 +1,8 @@
 /**
  * @synapse/ai
  *
- * Public entry point for the AI package.
- * Intentionally empty in Phase 0 (foundation only). Knowledge retrieval,
- * conversation, and memory are implemented in the AI phase.
+ * AI conversation state ownership. Knowledge retrieval, prompt assembly, and
+ * memory arrive in the AI phase; Phase 1 exposes the AI store factory.
  */
 
-export {};
+export { createAIStore, type AIActions, type AIStore, type AIStoreState } from "./stores/ai.store";

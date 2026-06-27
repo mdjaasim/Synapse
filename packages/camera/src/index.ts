@@ -1,9 +1,13 @@
 /**
  * @synapse/camera
  *
- * Public entry point for the Camera package.
- * Intentionally empty in Phase 0 (foundation only). Camera controller, rigs,
- * and spline paths are implemented in later phases.
+ * Camera state ownership. Controller, rigs, and spline paths arrive in later
+ * phases; Phase 1 exposes the camera store factory.
  */
 
-export {};
+export {
+  createCameraStore,
+  type CameraActions,
+  type CameraStore,
+  type CameraStoreState,
+} from "./stores/camera.store";

@@ -12,5 +12,10 @@
   "scripts": {
     "lint": "eslint .",
     "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@synapse/types": "workspace:*",
+    "@synapse/utils": "workspace:*",
+    "zustand": "^5.0.14"
   }
 }

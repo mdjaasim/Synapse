@@ -12,9 +12,19 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@synapse/ai": "workspace:*",
+    "@synapse/camera": "workspace:*",
+    "@synapse/config": "workspace:*",
+    "@synapse/engine": "workspace:*",
+    "@synapse/hooks": "workspace:*",
+    "@synapse/interactions": "workspace:*",
+    "@synapse/types": "workspace:*",
+    "@synapse/utils": "workspace:*",
+    "@tanstack/react-query": "^5.101.1",
     "next": "^16.2.9",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.1",

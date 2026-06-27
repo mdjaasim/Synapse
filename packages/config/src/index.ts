@@ -1,9 +1,9 @@
 /**
  * @synapse/config
  *
- * Public entry point for the Config package.
- * Intentionally empty in Phase 0 (foundation only). Constants, feature flags,
- * and theme tokens are implemented in later phases.
+ * Constants, feature flags, and theme tokens. Pure data; no framework imports.
  */
 
-export {};
+export * from "./theme";
+export * from "./feature-flags";
+export * from "./constants";
