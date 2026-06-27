@@ -18,6 +18,7 @@
     "@synapse/engine": "workspace:*",
     "@synapse/hooks": "workspace:*",
     "@synapse/interactions": "workspace:*",
+    "@synapse/renderer": "workspace:*",
     "@synapse/types": "workspace:*",
     "@synapse/utils": "workspace:*",
     "@tanstack/react-query": "^5.101.1",

@@ -12,3 +12,4 @@ export * from "./camera";
 export * from "./interaction";
 export * from "./ai";
 export * from "./events";
+export * from "./rendering";

@@ -11,7 +11,7 @@ export interface FeatureFlags {
 }
 
 export const FEATURE_FLAGS: FeatureFlags = {
-  canvas: false,
+  canvas: true,
   ai: false,
   analytics: false,
   debugTools: false,

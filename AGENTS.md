@@ -129,6 +129,12 @@ Always optimize after correctness, never before.
 
 Never break an existing architectural boundary.
 
+Before creating any new file, first determine whether an appropriate location already exists.
+
+Prefer extending an existing well-designed module over creating unnecessary files.
+
+The codebase should grow intentionally rather than mechanically.
+
 ---
 
 # Engineering Principles

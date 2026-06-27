@@ -1,9 +1,10 @@
 /**
  * @synapse/renderer
  *
- * Public entry point for the Renderer package.
- * Intentionally empty in Phase 0 (foundation only). Canvas, lighting, and
- * post-processing are implemented in the rendering phase.
+ * The React Three Fiber rendering layer: the canvas, scene root, render loop,
+ * lighting, and post-processing. This is the only package that depends on R3F.
+ * It owns the Three.js Scene and observes application state through an injected
+ * `FrameStateSource` (it never imports the Experience Engine).
  */
 
-export {};
+export { ExperienceCanvas, type ExperienceCanvasProps } from "./canvas/experience-canvas";
