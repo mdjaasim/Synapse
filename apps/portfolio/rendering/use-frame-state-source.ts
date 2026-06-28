@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import type { DynamicFrameState, FrameStateSource, Mood } from "@synapse/types";
 import { useExperienceContext } from "../providers/ExperienceProvider";
 import { useStoresContext } from "../providers/StoresProvider";
+import { useDistrictContext } from "../providers/DistrictProvider";
 
 /** Mood -> ambient energy. Drives the breathing pulse and rim intensity. */
 const MOOD_ENERGY: Record<Mood, number> = {
@@ -23,6 +24,7 @@ const MOOD_ENERGY: Record<Mood, number> = {
 export function useFrameStateSource(): FrameStateSource {
   const engine = useExperienceContext();
   const { settings, interaction } = useStoresContext();
+  const { controller } = useDistrictContext();
 
   return useMemo<FrameStateSource>(
     () => ({
@@ -31,6 +33,7 @@ export function useFrameStateSource(): FrameStateSource {
         const performance = engine.stores.performance.getState();
         const setting = settings.getState();
         const inter = interaction.getState();
+        const transition = controller.getSnapshot().transition;
         return {
           mood: experience.mood,
           energy: MOOD_ENERGY[experience.mood],
@@ -39,9 +42,11 @@ export function useFrameStateSource(): FrameStateSource {
           scroll: experience.storyProgress,
           quality: performance.qualityPreset,
           reducedMotion: setting.reducedMotion,
+          currentDistrict: experience.currentDistrict,
+          transitionProgress: transition.active ? transition.progress : 1,
         };
       },
     }),
-    [engine, settings, interaction],
+    [engine, settings, interaction, controller],
   );
 }

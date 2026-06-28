@@ -18,6 +18,12 @@ import { OverlayManager } from "./OverlayManager";
 export function AppShell({ children }: { children: ReactNode }) {
   return (
     <>
+      <a
+        href="#scroll-stage"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-lg focus:border focus:border-neutral-700 focus:bg-neutral-900 focus:px-4 focus:py-2 focus:text-xs focus:text-neutral-200"
+      >
+        Skip to narrative
+      </a>
       <AccessibilityLayer />
       <ErrorBoundary name="canvas">
         <CanvasSlot />

@@ -27,6 +27,7 @@ import { createTransitionRegistry, TransitionRegistry } from "./transitions/tran
 export interface DistrictCameraAdapter {
   focusDistrict(manifest: BaseDistrict["manifest"]): void;
   transitionTo(manifest: BaseDistrict["manifest"], profileId: string): void;
+  interruptTransition?(): void;
 }
 
 export interface DistrictControllerOptions {
@@ -34,6 +35,7 @@ export interface DistrictControllerOptions {
   readonly bus: SynapseEventBus;
   readonly camera: DistrictCameraAdapter;
   readonly getContext: () => DistrictContext | null;
+  readonly getReducedMotion?: () => boolean;
   readonly maxActive?: number;
 }
 
@@ -56,7 +58,14 @@ export class DistrictController {
   readonly #getContext: () => DistrictContext | null;
   #initialized = false;
 
-  constructor({ worldRoot, bus, camera, getContext, maxActive }: DistrictControllerOptions) {
+  constructor({
+    worldRoot,
+    bus,
+    camera,
+    getContext,
+    getReducedMotion,
+    maxActive,
+  }: DistrictControllerOptions) {
     this.registry = createDistrictRegistry();
     bootstrapDistrictRegistry(this.registry);
     this.worldRoot = worldRoot;
@@ -70,21 +79,19 @@ export class DistrictController {
       state: this.state,
       resources: this.resources,
     });
-    const managerOptions: {
-      worldRoot: WorldRoot;
-      lifecycle: DistrictLifecycle;
-      maxActive?: number;
-    } = { worldRoot, lifecycle: this.lifecycle };
-    if (maxActive !== undefined) {
-      managerOptions.maxActive = maxActive;
-    }
-    this.manager = createDistrictManager(managerOptions);
+    this.manager = createDistrictManager({
+      worldRoot,
+      lifecycle: this.lifecycle,
+      loader: this.loader,
+      ...(maxActive !== undefined ? { maxActive } : {}),
+    });
     this.#transitionRegistry = createTransitionRegistry();
     this.transitions = createDistrictTransitionManager({
       registry: this.registry,
       state: this.state,
       transitions: this.#transitionRegistry,
       bus,
+      ...(getReducedMotion ? { getReducedMotion } : {}),
     });
     this.#camera = camera;
     this.#getContext = getContext;
@@ -120,6 +127,7 @@ export class DistrictController {
     const kind = this.transitions.resolveKind(to, requestedTransition);
 
     if (from === to) {
+      await this.#ensureFocused(to);
       return;
     }
 
@@ -127,7 +135,9 @@ export class DistrictController {
       await this.exitDistrict(from);
     }
 
-    this.transitions.run(from, to, kind);
+    await this.#exitOtherFocused(to);
+
+    await this.transitions.run(from, to, kind);
 
     if (!this.loader.isLoaded(to)) {
       await this.loader.load(to, ctx);
@@ -139,6 +149,21 @@ export class DistrictController {
   async enterDistrict(id: DistrictId): Promise<void> {
     const district = this.#requireLoaded(id);
     const manifest = district.manifest;
+    const phase = this.lifecycle.getPhase(id);
+
+    if (phase === "focused" || phase === "active") {
+      await this.#ensureFocused(id);
+      return;
+    }
+
+    if (phase === "entering") {
+      return;
+    }
+
+    if (phase === "leaving") {
+      this.lifecycle.transition(id, "dormant");
+      this.state.setPhase(id, "dormant");
+    }
 
     this.lifecycle.transition(id, "entering");
     this.state.setPhase(id, "entering");
@@ -154,7 +179,6 @@ export class DistrictController {
     this.state.setPhase(id, "focused");
 
     this.#camera.transitionTo(manifest, manifest.transitionPreferences.cameraProfileId);
-    this.#camera.focusDistrict(manifest);
 
     this.eventBridge.publishEnter(id);
   }
@@ -162,6 +186,17 @@ export class DistrictController {
   async exitDistrict(id: DistrictId): Promise<void> {
     const district = this.loader.getInstance(id);
     if (!district) {
+      return;
+    }
+
+    const phase = this.lifecycle.getPhase(id);
+    if (
+      phase === "dormant" ||
+      phase === "disposed" ||
+      phase === "created" ||
+      phase === "prepared" ||
+      phase === "leaving"
+    ) {
       return;
     }
 
@@ -230,6 +265,27 @@ export class DistrictController {
       throw new Error(`District "${id}" is not loaded.`);
     }
     return district;
+  }
+
+  async #ensureFocused(id: DistrictId): Promise<void> {
+    if (!this.loader.isLoaded(id)) {
+      return;
+    }
+    const manifest = this.registry.getManifest(id);
+    this.#camera.transitionTo(manifest, manifest.transitionPreferences.cameraProfileId);
+    this.state.setCurrentDistrict(id);
+  }
+
+  async #exitOtherFocused(except: DistrictId): Promise<void> {
+    for (const id of this.state.getSnapshot().loadedDistrictIds) {
+      if (id === except) {
+        continue;
+      }
+      const phase = this.lifecycle.getPhase(id);
+      if (phase === "focused" || phase === "active" || phase === "entering") {
+        await this.exitDistrict(id);
+      }
+    }
   }
 }
 

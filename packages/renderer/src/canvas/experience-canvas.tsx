@@ -1,10 +1,15 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import type { DistrictContext, DistrictController } from "@synapse/world";
 import type { CameraController } from "@synapse/camera";
-import type { EnvironmentStateSource, FrameStateSource, FrameStatsHandler } from "@synapse/types";
+import type {
+  EnvironmentStateSource,
+  FrameStateSource,
+  FrameStatsHandler,
+  QualityPreset,
+} from "@synapse/types";
 import { dprForQuality } from "../quality/use-adaptive-quality";
 import { SceneRoot } from "../scene/scene-root";
 
@@ -16,7 +21,19 @@ export interface ExperienceCanvasProps {
   bindRenderContext: (ctx: DistrictContext) => void;
   onRenderContextReady?: () => Promise<void>;
   onStats?: FrameStatsHandler;
+  onQualityChange?: (preset: QualityPreset) => void;
   themeColor?: string;
+}
+
+function AdaptiveDpr({ source }: { source: FrameStateSource }) {
+  const gl = useThree((s) => s.gl);
+  useFrame(() => {
+    const quality = source.read().quality;
+    const [min, max] = dprForQuality(quality);
+    const dpr = Math.min(window.devicePixelRatio, max);
+    gl.setPixelRatio(Math.max(min, dpr));
+  });
+  return null;
 }
 
 /**
@@ -31,6 +48,7 @@ export function ExperienceCanvas({
   bindRenderContext,
   onRenderContextReady,
   onStats,
+  onQualityChange,
   themeColor = "#5b8cff",
 }: ExperienceCanvasProps) {
   const quality = source.read().quality;
@@ -44,6 +62,7 @@ export function ExperienceCanvas({
     themeColor,
     ...(onRenderContextReady ? { onRenderContextReady } : {}),
     ...(onStats ? { onStats } : {}),
+    ...(onQualityChange ? { onQualityChange } : {}),
   };
 
   return (
@@ -63,6 +82,7 @@ export function ExperienceCanvas({
         scene.background = new THREE.Color("#02030a");
       }}
     >
+      <AdaptiveDpr source={source} />
       <SceneRoot {...sceneRootProps} />
     </Canvas>
   );

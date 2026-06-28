@@ -7,7 +7,7 @@
  *
  * Inputs (uniforms), updated once per frame by the UniformManager:
  *   uTime, uMood, uProgress, uEnergy, uFocus, uInteraction, uDistance,
- *   uScroll, uPerformance, uBreath, uTheme.
+ *   uScroll, uPerformance, uBreath, uTheme, uFogDensity, uTransition.
  * Outputs: none (declarations only).
  * Performance: declarations only; zero runtime cost. Shaders enable only the
  * uniforms they actually read.
@@ -24,6 +24,8 @@ uniform float uScroll;
 uniform float uPerformance;
 uniform float uBreath;
 uniform vec3 uTheme;
+uniform float uFogDensity;
+uniform float uTransition;
 `;
 
 /** Ordered list of the standardized global uniform names. */
@@ -39,6 +41,8 @@ export const STANDARD_UNIFORM_NAMES = [
   "uPerformance",
   "uBreath",
   "uTheme",
+  "uFogDensity",
+  "uTransition",
 ] as const;
 
 export type StandardUniformName = (typeof STANDARD_UNIFORM_NAMES)[number];

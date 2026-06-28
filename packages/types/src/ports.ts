@@ -37,7 +37,7 @@ export interface CameraCommandPort {
   saveCheckpoint(nodeId: string): CameraCheckpoint;
   restoreCheckpoint(checkpoint: CameraCheckpoint): void;
   beginFlight(plan: CameraFlightPlan): void;
-  interruptFlight(): void;
+  interruptFlight?(): void;
   savePose(): CameraPoseSnapshot;
   restorePose(pose: CameraPoseSnapshot): void;
 }

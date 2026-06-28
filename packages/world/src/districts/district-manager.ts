@@ -2,10 +2,12 @@ import type { DistrictId } from "@synapse/types";
 import type { WorldRoot } from "../root/world-root";
 import type { BaseDistrict } from "./base-district";
 import type { DistrictLifecycle } from "./district-lifecycle";
+import type { DistrictLoader } from "./district-loader";
 
 export interface DistrictManagerOptions {
   readonly worldRoot: WorldRoot;
   readonly lifecycle: DistrictLifecycle;
+  readonly loader: DistrictLoader;
   /** Maximum simultaneously scene-mounted districts (Doc 16 budget). */
   readonly maxActive?: number;
 }
@@ -16,13 +18,15 @@ export interface DistrictManagerOptions {
 export class DistrictManager {
   readonly #worldRoot: WorldRoot;
   readonly #lifecycle: DistrictLifecycle;
+  readonly #loader: DistrictLoader;
   readonly #maxActive: number;
   readonly #mounted = new Map<DistrictId, BaseDistrict>();
   readonly #focusOrder: DistrictId[] = [];
 
-  constructor({ worldRoot, lifecycle, maxActive = 3 }: DistrictManagerOptions) {
+  constructor({ worldRoot, lifecycle, loader, maxActive = 3 }: DistrictManagerOptions) {
     this.#worldRoot = worldRoot;
     this.#lifecycle = lifecycle;
+    this.#loader = loader;
     this.#maxActive = maxActive;
   }
 
@@ -91,6 +95,7 @@ export class DistrictManager {
     });
     if (victim) {
       this.unmount(victim);
+      this.#loader.unload(victim);
     }
   }
 }

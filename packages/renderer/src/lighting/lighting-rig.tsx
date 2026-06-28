@@ -5,7 +5,7 @@ import { useEffect, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import type { SceneLayers } from "@synapse/world";
 import type { EnvironmentStateSource, FrameStateSource } from "@synapse/types";
-import { interpolateOriginVoidLighting } from "./lighting-profiles";
+import { interpolateDistrictLighting } from "./lighting-profiles";
 
 interface LightingRigLights {
   readonly ambient: THREE.AmbientLight;
@@ -14,8 +14,7 @@ interface LightingRigLights {
 }
 
 /**
- * Mounts the Origin Void lights into the world's `lighting` layer and updates
- * their color/intensity each frame from mood, scroll, and environmental bias.
+ * Global cinematic lighting rig — blends per-district profiles with mood and scroll.
  */
 export function LightingRig({
   layers,
@@ -52,7 +51,13 @@ export function LightingRig({
   useFrame(() => {
     const frame = frameSource.read();
     const env = environmentSource.read();
-    const profile = interpolateOriginVoidLighting(frame.mood, frame.scroll, env.lightBias);
+    const profile = interpolateDistrictLighting(
+      frame.currentDistrict,
+      frame.mood,
+      frame.scroll,
+      env.lightBias,
+      frame.transitionProgress,
+    );
 
     lights.ambient.color.set(profile.ambient.color);
     lights.ambient.intensity = profile.ambient.intensity;

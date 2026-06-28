@@ -28,6 +28,14 @@ export const NEUTRAL_ENVIRONMENT: EnvironmentalState = {
  * Injected source of environmental state. The application ticks the simulator
  * and the renderer reads this each frame alongside FrameStateSource.
  */
+export interface EnvironmentTickInput {
+  readonly delta: number;
+  readonly scroll: number;
+  readonly reducedMotion: boolean;
+}
+
 export interface EnvironmentStateSource {
   read(): EnvironmentalState;
+  /** Advances simulation — called from the render loop when provided. */
+  tick?(input: EnvironmentTickInput): void;
 }

@@ -36,6 +36,7 @@ export function createEmissivePhysicalFamily(
       material.onBeforeCompile = (shader) => {
         shader.uniforms.uBreath = standard.uBreath;
         shader.uniforms.uEnergy = standard.uEnergy;
+        shader.uniforms.uScroll = standard.uScroll;
         shader.uniforms.uGlowColor = { value: glow };
 
         shader.vertexShader =
@@ -51,7 +52,7 @@ export function createEmissivePhysicalFamily(
           );
 
         shader.fragmentShader =
-          "uniform float uBreath;\nuniform float uEnergy;\nuniform vec3 uGlowColor;\nvarying vec3 vSynView;\nvarying vec3 vSynNormal;\n" +
+          "uniform float uBreath;\nuniform float uEnergy;\nuniform float uScroll;\nuniform vec3 uGlowColor;\nvarying vec3 vSynView;\nvarying vec3 vSynNormal;\n" +
           shader.fragmentShader.replace(
             "#include <emissivemap_fragment>",
             [
@@ -59,6 +60,7 @@ export function createEmissivePhysicalFamily(
               "float synRim = pow(1.0 - clamp(dot(normalize(vSynNormal), normalize(vSynView)), 0.0, 1.0), 2.0);",
               "totalEmissiveRadiance += uGlowColor * synRim * (0.8 + 0.5 * uEnergy);",
               "totalEmissiveRadiance *= (0.75 + 0.25 * (uBreath - 0.5) * 2.0);",
+              "totalEmissiveRadiance *= (0.94 + uScroll * 0.06);",
             ].join("\n"),
           );
       };

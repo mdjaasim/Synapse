@@ -16,7 +16,7 @@ import { ScrollSection, ProjectCard } from "./scroll/ScrollSection";
 /** Full narrative scroll journey — drives SceneDirector via scroll progress. */
 export function ScrollStage() {
   return (
-    <div className="relative w-full" data-slot="scroll-stage">
+    <div id="scroll-stage" className="relative w-full" data-slot="scroll-stage">
       {/* Origin Void */}
       <ScrollSection label="Origin" title="Synapse">
         <p>{PORTFOLIO_IDENTITY.tagline}</p>

@@ -31,7 +31,6 @@ varying vec3 vDir;
 varying float vDist;
 uniform vec3 uInnerColor;
 uniform vec3 uOuterColor;
-uniform float uFogDensity;
 void main(){
   float h = clamp(vDir.y * 0.5 + 0.5, 0.0, 1.0);
   vec3 col = mix(uInnerColor, uOuterColor, pow(h, 1.2));

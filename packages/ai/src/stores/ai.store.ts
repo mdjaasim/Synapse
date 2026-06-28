@@ -3,6 +3,7 @@ import type { AIState, ChatMessage, DistrictId } from "@synapse/types";
 
 export interface AIActions {
   addMessage(message: ChatMessage): void;
+  updateMessage(id: string, content: string): void;
   setTyping(isTyping: boolean): void;
   setSuggestions(suggestions: readonly string[]): void;
   setPendingNavigation(districtId: DistrictId | null): void;
@@ -27,6 +28,10 @@ export function createAIStore(): AIStore {
   return createStore<AIStoreState>((set) => ({
     ...INITIAL_STATE,
     addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
+    updateMessage: (id, content) =>
+      set((state) => ({
+        messages: state.messages.map((m) => (m.id === id ? { ...m, content } : m)),
+      })),
     setTyping: (isTyping) => set({ isTyping }),
     setSuggestions: (suggestions) => set({ suggestions }),
     setPendingNavigation: (pendingNavigation) => set({ pendingNavigation }),

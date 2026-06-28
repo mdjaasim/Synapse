@@ -6,7 +6,7 @@
  * renderer-agnostic (the renderer may observe the engine, never the reverse).
  */
 
-import type { Mood } from "./experience";
+import type { DistrictId, Mood } from "./experience";
 import type { QualityPreset } from "./performance";
 
 /**
@@ -30,6 +30,10 @@ export interface FrameState {
   readonly scroll: number;
   readonly quality: QualityPreset;
   readonly reducedMotion: boolean;
+  /** Active district for lighting and post tuning. */
+  readonly currentDistrict: DistrictId | null;
+  /** District transition blend, 0..1 (1 = complete). */
+  readonly transitionProgress: number;
 }
 
 /** The dynamic portion of {@link FrameState}, read once per frame. */

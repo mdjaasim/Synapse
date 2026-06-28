@@ -14,6 +14,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@synapse/config": "workspace:*",
     "@synapse/types": "workspace:*",
     "zustand": "^5.0.14"
   }

@@ -38,6 +38,12 @@ export function CanvasSlot() {
         onRenderContextReady={() => onRenderContextReady()}
         themeColor={THEME.colors.accent}
         onStats={({ fps }) => engine.stores.performance.getState().setFps(fps)}
+        onQualityChange={(preset) => {
+          const current = engine.stores.performance.getState().qualityPreset;
+          if (current !== preset) {
+            engine.stores.performance.getState().setQualityPreset(preset);
+          }
+        }}
       />
     </div>
   );

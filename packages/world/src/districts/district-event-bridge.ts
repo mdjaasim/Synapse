@@ -45,6 +45,9 @@ export class DistrictEventBridge {
   }
 
   publishExit(districtId: DistrictId): void {
+    if (this.#state.getCurrentDistrict() === districtId) {
+      this.#state.setCurrentDistrict(null);
+    }
     this.#bus.publish("world.exitDistrict", { districtId });
     this.publishLifecycleChanged(districtId);
   }

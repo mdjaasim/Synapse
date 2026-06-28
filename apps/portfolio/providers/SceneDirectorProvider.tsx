@@ -52,7 +52,9 @@ export function SceneDirectorProvider({ children }: { children: ReactNode }) {
       transitionTo: (manifest, profileId) => cameraController.transitionTo(manifest, profileId),
       saveCheckpoint: (nodeId) => flightController.saveCheckpoint(nodeId),
       restoreCheckpoint: (checkpoint) => flightController.restoreCheckpoint(checkpoint),
-      beginFlight: (plan) => flightController.beginFlight(plan),
+      beginFlight: (plan) => {
+        void flightController.beginFlight(plan);
+      },
       interruptFlight: () => flightController.interruptFlight(),
       savePose: () => cameraController.savePose(),
       restorePose: (pose) => cameraController.restorePose(pose),

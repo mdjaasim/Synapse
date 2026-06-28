@@ -14,12 +14,16 @@ function ScrollSection({
   minHeight?: string;
 }) {
   return (
-    <section className={`flex ${minHeight} flex-col items-center justify-center px-6 py-16`}>
-      <p className="text-xs uppercase tracking-[0.5em] text-neutral-600">{label}</p>
-      <h2 className="mt-4 text-2xl font-light tracking-tight text-neutral-200 md:text-4xl">
+    <section
+      className={`flex ${minHeight} flex-col items-center justify-center px-4 py-12 sm:px-6 sm:py-16`}
+    >
+      <p className="text-[10px] uppercase tracking-[0.4em] text-neutral-600 sm:text-xs sm:tracking-[0.5em]">
+        {label}
+      </p>
+      <h2 className="mt-3 text-xl font-light tracking-tight text-neutral-200 sm:mt-4 sm:text-2xl md:text-4xl">
         {title}
       </h2>
-      <div className="mt-6 max-w-2xl text-center text-sm leading-relaxed text-neutral-400">
+      <div className="mt-4 max-w-2xl text-center text-sm leading-relaxed text-neutral-400 sm:mt-6">
         {children}
       </div>
     </section>

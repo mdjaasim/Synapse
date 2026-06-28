@@ -3,6 +3,7 @@
 import Lenis from "lenis";
 import "lenis/dist/lenis.css";
 import { gsap, ScrollTrigger } from "@synapse/animation";
+import { useStore } from "zustand";
 import { useEffect, type ReactNode } from "react";
 import { createLenisAdapter } from "../animation/lenis-adapter";
 import { useAnimationContext } from "./AnimationProvider";
@@ -16,10 +17,9 @@ import { useStoresContext } from "./StoresProvider";
 export function ScrollProvider({ children }: { children: ReactNode }) {
   const engine = useAnimationContext();
   const { settings } = useStoresContext();
+  const reducedMotion = useStore(settings, (s) => s.reducedMotion);
 
   useEffect(() => {
-    const reducedMotion = settings.getState().reducedMotion;
-
     if (reducedMotion) {
       engine.connectSmoothScroll();
       return () => {
@@ -29,7 +29,8 @@ export function ScrollProvider({ children }: { children: ReactNode }) {
 
     const lenis = new Lenis({
       smoothWheel: true,
-      lerp: 0.1,
+      lerp: 0.085,
+      touchMultiplier: 1.4,
     });
 
     const adapter = createLenisAdapter(lenis);
@@ -46,7 +47,7 @@ export function ScrollProvider({ children }: { children: ReactNode }) {
       adapter.destroy();
       engine.scroll.disconnect();
     };
-  }, [engine, settings]);
+  }, [engine, reducedMotion]);
 
   return <>{children}</>;
 }

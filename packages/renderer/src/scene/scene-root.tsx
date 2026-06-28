@@ -7,7 +7,12 @@ import { createMaterialFactory, type MaterialFactory } from "@synapse/materials"
 import { createParticleEngine, type ParticleEngine } from "@synapse/particles";
 import type { DistrictContext, DistrictController } from "@synapse/world";
 import type { CameraController } from "@synapse/camera";
-import type { EnvironmentStateSource, FrameStateSource, FrameStatsHandler } from "@synapse/types";
+import type {
+  EnvironmentStateSource,
+  FrameStateSource,
+  FrameStatsHandler,
+  QualityPreset,
+} from "@synapse/types";
 import type { UniformManager } from "@synapse/shaders";
 import { LightingRig } from "../lighting/lighting-rig";
 import { PostProcessing } from "../post/post-processing";
@@ -21,6 +26,7 @@ export interface SceneRootProps {
   bindRenderContext: (ctx: DistrictContext) => void;
   onRenderContextReady?: () => Promise<void>;
   onStats?: FrameStatsHandler | undefined;
+  onQualityChange?: (preset: QualityPreset) => void;
   themeColor: string;
 }
 
@@ -50,6 +56,7 @@ export function SceneRoot({
   bindRenderContext,
   onRenderContextReady,
   onStats,
+  onQualityChange,
   themeColor,
 }: SceneRootProps) {
   const [systems, setSystems] = useState<RenderSystems | null>(null);
@@ -103,8 +110,9 @@ export function SceneRoot({
         environmentSource={environmentSource}
         districtController={districtController}
         onStats={onStats}
+        {...(onQualityChange ? { onQualityChange } : {})}
       />
-      {postReady ? <PostProcessing quality={source.read().quality} /> : null}
+      {postReady ? <PostProcessing source={source} /> : null}
     </>
   );
 }

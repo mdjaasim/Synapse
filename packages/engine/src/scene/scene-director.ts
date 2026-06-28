@@ -247,8 +247,8 @@ export class SceneDirector {
     }
 
     const manifest = this.#district.getManifest(node.districtId);
+    this.#camera.interruptFlight?.();
     this.#camera.transitionTo(manifest, node.cameraProfileId);
-    this.#camera.focusDistrict(manifest);
 
     if (node.checkpoint) {
       const checkpoint = this.#camera.saveCheckpoint(node.id);

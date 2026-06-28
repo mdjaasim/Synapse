@@ -15,13 +15,13 @@ export const MOTION_TOKENS = {
   },
   delay: {
     none: 0,
-    short: 0.1,
-    medium: 0.25,
+    short: 0.12,
+    medium: 0.32,
   },
   stagger: {
-    tight: 0.04,
-    base: 0.08,
-    wide: 0.15,
+    tight: 0.05,
+    base: 0.1,
+    wide: 0.18,
   },
 } as const;
 

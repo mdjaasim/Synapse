@@ -55,6 +55,84 @@ export function lightingForMood(mood: Mood): LightingProfile {
   }
 }
 
+/** Per-district cinematic lighting derived from material glow palettes. */
+export const DISTRICT_LIGHTING: Record<string, LightingProfile> = {
+  origin: ORIGIN_VOID_LIGHTING,
+  "project-galaxy": {
+    ambient: { color: "#12082a", intensity: 0.55 },
+    key: { color: "#c4a0ff", intensity: 1.35, position: { x: 2, y: 5, z: 4 } },
+    rim: { color: "#6b3fd0", intensity: 1.05, position: { x: -5, y: -1, z: -4 } },
+  },
+  "client-worlds": {
+    ambient: { color: "#101620", intensity: 0.58 },
+    key: { color: "#8ab4f8", intensity: 1.3, position: { x: 4, y: 3, z: 5 } },
+    rim: { color: "#3a6bc8", intensity: 0.95, position: { x: -3, y: -2, z: -3 } },
+  },
+  "engineering-core": {
+    ambient: { color: "#0c1018", intensity: 0.52 },
+    key: { color: "#6ec4ff", intensity: 1.25, position: { x: 2, y: 4, z: 6 } },
+    rim: { color: "#2a5080", intensity: 0.85, position: { x: -4, y: 0, z: -2 } },
+  },
+  "knowledge-forest": {
+    ambient: { color: "#0a1410", intensity: 0.56 },
+    key: { color: "#5dffb0", intensity: 1.2, position: { x: -2, y: 5, z: 3 } },
+    rim: { color: "#1a6040", intensity: 0.9, position: { x: 4, y: -1, z: -4 } },
+  },
+  "ai-observatory": {
+    ambient: { color: "#0c1424", intensity: 0.54 },
+    key: { color: "#9ec5ff", intensity: 1.28, position: { x: 0, y: 4, z: 5 } },
+    rim: { color: "#4080d0", intensity: 1.0, position: { x: -3, y: -2, z: -3 } },
+  },
+  "memory-stream": {
+    ambient: { color: "#100818", intensity: 0.57 },
+    key: { color: "#e8b0ff", intensity: 1.22, position: { x: 3, y: 3, z: 4 } },
+    rim: { color: "#8040a0", intensity: 0.92, position: { x: -4, y: -1, z: -3 } },
+  },
+};
+
+function lerpLight(a: LightConfig, b: LightConfig, t: number): LightConfig {
+  const base: LightConfig = {
+    color: t < 0.5 ? a.color : b.color,
+    intensity: a.intensity + (b.intensity - a.intensity) * t,
+  };
+  if (a.position && b.position) {
+    return {
+      ...base,
+      position: {
+        x: a.position.x + (b.position.x - a.position.x) * t,
+        y: a.position.y + (b.position.y - a.position.y) * t,
+        z: a.position.z + (b.position.z - a.position.z) * t,
+      },
+    };
+  }
+  const fallback = a.position ?? b.position;
+  return fallback ? { ...base, position: fallback } : base;
+}
+
+function blendProfiles(from: LightingProfile, to: LightingProfile, t: number): LightingProfile {
+  return {
+    ambient: lerpLight(from.ambient, to.ambient, t),
+    key: lerpLight(from.key, to.key, t),
+    rim: lerpLight(from.rim, to.rim, t),
+  };
+}
+
+/** Resolves district lighting with mood + scroll modulation. */
+export function interpolateDistrictLighting(
+  districtId: string | null,
+  mood: Mood,
+  scroll: number,
+  lightBias: number,
+  transitionProgress: number,
+): LightingProfile {
+  const district = districtId
+    ? (DISTRICT_LIGHTING[districtId] ?? ORIGIN_VOID_LIGHTING)
+    : ORIGIN_VOID_LIGHTING;
+  const moodBase = lightingForMood(mood);
+  const blended = blendProfiles(moodBase, district, Math.min(transitionProgress, 1));
+  return interpolateOriginVoidLighting(mood, scroll, lightBias, blended);
+}
+
 /**
  * Interpolates Origin Void lighting from mood, scroll progress, and the
  * environmental light bias. Scroll slowly approaches the core; ambient deepens.
@@ -63,8 +141,9 @@ export function interpolateOriginVoidLighting(
   mood: Mood,
   scroll: number,
   lightBias: number,
+  baseOverride?: LightingProfile,
 ): LightingProfile {
-  const base = lightingForMood(mood);
+  const base = baseOverride ?? lightingForMood(mood);
   const bias = (lightBias - 0.5) * 2;
   const scrollT = Math.min(Math.max(scroll, 0), 1);
 

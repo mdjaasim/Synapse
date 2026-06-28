@@ -1,3 +1,4 @@
+import gsap from "gsap";
 import type { CameraPreset } from "../rig/camera-presets";
 import type { DistrictManifest, Vec3 } from "@synapse/types";
 import { CameraRig, type CameraRigOptions } from "../rig/camera-rig";
@@ -25,6 +26,8 @@ export class CameraController {
   readonly #rig: CameraRig;
   readonly #composed: CameraPoseState;
   #focusedDistrictId: DistrictManifest["id"] | null = null;
+  #activeTween: gsap.core.Timeline | null = null;
+  #reducedMotion = false;
 
   constructor({ preset, rigOptions }: CameraControllerOptions) {
     this.#rig = new CameraRig(preset, rigOptions);
@@ -36,11 +39,20 @@ export class CameraController {
     return this.#focusedDistrictId;
   }
 
+  get isTransitioning(): boolean {
+    return this.#activeTween !== null && this.#activeTween.isActive();
+  }
+
+  setReducedMotion(reducedMotion: boolean): void {
+    this.#reducedMotion = reducedMotion;
+  }
+
   savePose(): SavedCameraPose {
     return snapshotPose(this.narrativePose);
   }
 
   restorePose(saved: SavedCameraPose): void {
+    this.#killTween();
     this.narrativePose.position.x = saved.position.x;
     this.narrativePose.position.y = saved.position.y;
     this.narrativePose.position.z = saved.position.z;
@@ -48,6 +60,10 @@ export class CameraController {
     this.narrativePose.target.y = saved.target.y;
     this.narrativePose.target.z = saved.target.z;
     this.narrativePose.fov = saved.fov;
+  }
+
+  interruptTransition(): void {
+    this.#killTween();
   }
 
   lookAtTarget(target: Vec3): void {
@@ -58,6 +74,7 @@ export class CameraController {
 
   /** Applies the primary camera target from a district manifest. */
   focusDistrict(manifest: DistrictManifest): void {
+    this.#killTween();
     const cam = primaryCameraTarget(manifest);
     this.narrativePose.position.x = cam.position.x;
     this.narrativePose.position.y = cam.position.y;
@@ -70,23 +87,58 @@ export class CameraController {
   }
 
   /**
-   * Transitions to a district camera preset. Phase 5A snaps instantly;
-   * profile metadata is consumed for future GSAP tweening (Phase 5B).
+   * Cinematic transition to a district camera preset. Respects profile duration
+   * and easing; instant when duration is zero or reduced motion is active.
    */
   transitionTo(manifest: DistrictManifest, profileId: string): void {
     const profile = getCameraTransitionProfile(profileId);
     const preset = cameraPresetFromManifest(manifest);
-    if (profile.duration <= 0) {
-      this.narrativePose.position.x = preset.position.x;
-      this.narrativePose.position.y = preset.position.y;
-      this.narrativePose.position.z = preset.position.z;
-      this.narrativePose.target.x = preset.target.x;
-      this.narrativePose.target.y = preset.target.y;
-      this.narrativePose.target.z = preset.target.z;
-      this.narrativePose.fov = preset.fov;
-    } else {
+
+    if (profile.duration <= 0 || this.#reducedMotion) {
       this.focusDistrict(manifest);
+      return;
     }
+
+    this.#killTween();
+    const tl = gsap.timeline({
+      onComplete: () => {
+        this.#activeTween = null;
+      },
+    });
+
+    tl.to(
+      this.narrativePose.position,
+      {
+        x: preset.position.x,
+        y: preset.position.y,
+        z: preset.position.z,
+        duration: profile.duration,
+        ease: profile.easing,
+      },
+      0,
+    );
+    tl.to(
+      this.narrativePose.target,
+      {
+        x: preset.target.x,
+        y: preset.target.y,
+        z: preset.target.z,
+        duration: profile.duration,
+        ease: profile.easing,
+      },
+      0,
+    );
+    tl.to(
+      this.narrativePose,
+      {
+        fov: preset.fov,
+        duration: profile.duration,
+        ease: profile.easing,
+      },
+      0,
+    );
+
+    this.#activeTween = tl;
     this.#focusedDistrictId = manifest.id;
   }
 
@@ -122,6 +174,13 @@ export class CameraController {
 
     return snapshotPose(this.#composed);
   }
+
+  #killTween(): void {
+    if (this.#activeTween) {
+      this.#activeTween.kill();
+      this.#activeTween = null;
+    }
+  }
 }
 
 export function createCameraController(options: CameraControllerOptions): CameraController {
@@ -136,6 +195,9 @@ export function createDistrictCameraAdapter(controller: CameraController) {
     },
     transitionTo(manifest: DistrictManifest, profileId: string) {
       controller.transitionTo(manifest, profileId);
+    },
+    interruptTransition() {
+      controller.interruptTransition();
     },
   };
 }

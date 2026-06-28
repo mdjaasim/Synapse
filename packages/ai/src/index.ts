@@ -6,3 +6,13 @@
  */
 
 export { createAIStore, type AIActions, type AIStore, type AIStoreState } from "./stores/ai.store";
+export {
+  matchMockResponse,
+  defaultMockResponse,
+  streamMockTokens,
+  loadSession,
+  saveSession,
+  contextualSuggestions,
+  type MockMatchResult,
+  type SessionSnapshot,
+} from "./mock-conversation";

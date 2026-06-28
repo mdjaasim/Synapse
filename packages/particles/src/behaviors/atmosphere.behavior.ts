@@ -18,9 +18,10 @@ varying float vAlpha;
 void main(){
   vec3 p = position;
   float t = uTime * 0.012 + aSeed * 6.2831853;
-  p.x += sin(t) * 0.06;
-  p.y += cos(t * 0.85) * 0.05;
-  p.z += sin(t * 0.95) * 0.06;
+  float flow = uScroll * 0.15 + uEnergy * 0.08;
+  p.x += sin(t + flow) * (0.06 + uEnergy * 0.02);
+  p.y += cos(t * 0.85 + flow * 0.5) * (0.05 + uBreath * 0.02);
+  p.z += sin(t * 0.95 - flow) * (0.06 + uEnergy * 0.015);
   vec4 mv = modelViewMatrix * vec4(p, 1.0);
   float dist = max(-mv.z, 0.001);
   gl_PointSize = aScale * (220.0 / dist);
@@ -72,6 +73,8 @@ export function createAtmosphereParticleMaterial({
       uPerformance: standard.uPerformance,
       uBreath: standard.uBreath,
       uTheme: standard.uTheme,
+      uFogDensity: standard.uFogDensity,
+      uTransition: standard.uTransition,
       uColor: { value: color },
     },
     transparent: true,

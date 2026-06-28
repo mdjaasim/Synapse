@@ -29,13 +29,15 @@ export class UniformManager {
     u.uTime.value = frame.elapsed;
     u.uMood.value = MOODS.indexOf(frame.mood) / MOOD_DIVISOR;
     u.uProgress.value = frame.scroll;
-    u.uEnergy.value = frame.energy;
     u.uFocus.value = frame.focus;
     u.uInteraction.value = frame.interaction;
     u.uDistance.value = distance;
     u.uScroll.value = frame.scroll;
     u.uPerformance.value = QUALITY_PRESETS.indexOf(frame.quality) / QUALITY_DIVISOR;
     u.uBreath.value = environment.breath;
+    u.uFogDensity.value = environment.fogDensity;
+    u.uTransition.value = frame.transitionProgress;
+    u.uEnergy.value = Math.min(1, frame.energy * 0.65 + environment.energyFlow * 0.35);
   }
 }
 

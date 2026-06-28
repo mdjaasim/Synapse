@@ -12,6 +12,7 @@ import type { SynapseEventBus } from "@synapse/types";
 import { useEffect, useMemo, useRef, type ReactNode } from "react";
 import { useExperienceContext } from "./ExperienceProvider";
 import { useCameraContext } from "./CameraProvider";
+import { useStoresContext } from "./StoresProvider";
 
 export interface DistrictContextValue {
   readonly controller: DistrictController;
@@ -34,6 +35,7 @@ export interface DistrictProviderProps {
  */
 export function DistrictProvider({ children, bus }: DistrictProviderProps) {
   const cameraController = useCameraContext();
+  const { settings } = useStoresContext();
   const renderContextRef = useRef<DistrictContext | null>(null);
   const worldRootRef = useRef(createWorldRoot());
 
@@ -43,8 +45,9 @@ export function DistrictProvider({ children, bus }: DistrictProviderProps) {
       bus,
       camera: createDistrictCameraAdapter(cameraController),
       getContext: () => renderContextRef.current,
+      getReducedMotion: () => settings.getState().reducedMotion,
     });
-  }, [bus, cameraController]);
+  }, [bus, cameraController, settings]);
 
   useEffect(() => {
     return () => {

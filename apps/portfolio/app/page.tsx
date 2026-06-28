@@ -9,9 +9,11 @@ export default function HomePage() {
   return (
     <>
       <ScrollStage />
-      <div className="pointer-events-none fixed bottom-6 left-6 z-40 font-mono text-[10px] text-neutral-600">
-        progress: {(storyProgress * 100).toFixed(0)}%
-      </div>
+      {process.env.NODE_ENV === "development" ? (
+        <div className="pointer-events-none fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-[max(1.5rem,env(safe-area-inset-left))] z-40 font-mono text-[10px] text-neutral-600">
+          progress: {(storyProgress * 100).toFixed(0)}%
+        </div>
+      ) : null}
     </>
   );
 }
