@@ -1,11 +1,12 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect } from "react";
 import { FEATURE_FLAGS, THEME } from "@synapse/config";
 import { useExperienceContext } from "../../providers/ExperienceProvider";
 import { useCameraContext } from "../../providers/CameraProvider";
 import { useEnvironmentContext } from "../../providers/EnvironmentProvider";
+import { useDistrictContext } from "../../providers/DistrictProvider";
+import { useSceneDirectorContext } from "../../providers/SceneDirectorProvider";
 import { useFrameStateSource } from "../../rendering/use-frame-state-source";
 
 const ExperienceCanvas = dynamic(
@@ -19,15 +20,8 @@ export function CanvasSlot() {
   const cameraController = useCameraContext();
   const source = useFrameStateSource();
   const environmentSource = useEnvironmentContext();
-
-  useEffect(() => {
-    engine.stores.experience.getState().setWorldPhase("active");
-    engine.stores.experience.getState().setDistrict("origin");
-    return () => {
-      engine.stores.experience.getState().setWorldPhase("dormant");
-      engine.stores.experience.getState().setDistrict(null);
-    };
-  }, [engine]);
+  const { controller, bindRenderContext } = useDistrictContext();
+  const { onRenderContextReady } = useSceneDirectorContext();
 
   if (!FEATURE_FLAGS.canvas) {
     return <div aria-hidden className="fixed inset-0 -z-10" data-slot="canvas" />;
@@ -39,6 +33,9 @@ export function CanvasSlot() {
         source={source}
         environmentSource={environmentSource}
         cameraController={cameraController}
+        districtController={controller}
+        bindRenderContext={bindRenderContext}
+        onRenderContextReady={() => onRenderContextReady()}
         themeColor={THEME.colors.accent}
         onStats={({ fps }) => engine.stores.performance.getState().setFps(fps)}
       />

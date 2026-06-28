@@ -3,6 +3,8 @@
 import { FEATURE_FLAGS } from "@synapse/config";
 import { useSettingsStore } from "../../hooks/use-stores";
 import { AnimationDebugOverlay } from "./AnimationDebugOverlay";
+import { DistrictDebugPanel } from "./DistrictDebugPanel";
+import { NarrativeDebugPanel } from "./NarrativeDebugPanel";
 
 /** Developer tools slot, gated by feature flag or developer mode. */
 export function DebugTools() {
@@ -12,5 +14,11 @@ export function DebugTools() {
     return null;
   }
 
-  return <AnimationDebugOverlay />;
+  return (
+    <>
+      <AnimationDebugOverlay />
+      <DistrictDebugPanel />
+      <NarrativeDebugPanel />
+    </>
+  );
 }

@@ -5,6 +5,7 @@
 
 export const DISTRICT_IDS = [
   "origin",
+  "memory-stream",
   "knowledge-forest",
   "engineering-core",
   "client-worlds",

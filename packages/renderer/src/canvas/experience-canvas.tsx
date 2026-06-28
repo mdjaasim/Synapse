@@ -2,6 +2,7 @@
 
 import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
+import type { DistrictContext, DistrictController } from "@synapse/world";
 import type { CameraController } from "@synapse/camera";
 import type { EnvironmentStateSource, FrameStateSource, FrameStatsHandler } from "@synapse/types";
 import { dprForQuality } from "../quality/use-adaptive-quality";
@@ -11,6 +12,9 @@ export interface ExperienceCanvasProps {
   source: FrameStateSource;
   environmentSource: EnvironmentStateSource;
   cameraController: CameraController;
+  districtController: DistrictController;
+  bindRenderContext: (ctx: DistrictContext) => void;
+  onRenderContextReady?: () => Promise<void>;
   onStats?: FrameStatsHandler;
   themeColor?: string;
 }
@@ -23,10 +27,24 @@ export function ExperienceCanvas({
   source,
   environmentSource,
   cameraController,
+  districtController,
+  bindRenderContext,
+  onRenderContextReady,
   onStats,
   themeColor = "#5b8cff",
 }: ExperienceCanvasProps) {
   const quality = source.read().quality;
+
+  const sceneRootProps = {
+    source,
+    environmentSource,
+    cameraController,
+    districtController,
+    bindRenderContext,
+    themeColor,
+    ...(onRenderContextReady ? { onRenderContextReady } : {}),
+    ...(onStats ? { onStats } : {}),
+  };
 
   return (
     <Canvas
@@ -45,13 +63,7 @@ export function ExperienceCanvas({
         scene.background = new THREE.Color("#02030a");
       }}
     >
-      <SceneRoot
-        source={source}
-        environmentSource={environmentSource}
-        cameraController={cameraController}
-        onStats={onStats}
-        themeColor={themeColor}
-      />
+      <SceneRoot {...sceneRootProps} />
     </Canvas>
   );
 }

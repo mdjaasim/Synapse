@@ -26,6 +26,16 @@ export class WorldRoot {
     this.#objects.set(object.id, { object, layer });
   }
 
+  /** Removes from the scene graph without disposing — for district unmount. */
+  detach(id: string): void {
+    const entry = this.#objects.get(id);
+    if (!entry) {
+      return;
+    }
+    this.layers[entry.layer].remove(entry.object.object3d);
+    this.#objects.delete(id);
+  }
+
   remove(id: string): void {
     const entry = this.#objects.get(id);
     if (!entry) {

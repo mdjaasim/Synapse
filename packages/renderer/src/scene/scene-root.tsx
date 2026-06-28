@@ -5,13 +5,7 @@ import { useEffect, useState } from "react";
 import { createSynapseShaderRegistry, createUniformManager } from "@synapse/shaders";
 import { createMaterialFactory, type MaterialFactory } from "@synapse/materials";
 import { createParticleEngine, type ParticleEngine } from "@synapse/particles";
-import {
-  createOriginVoidDistrict,
-  createWorldRoot,
-  DistrictManager,
-  type OriginVoidDistrict,
-  type WorldRoot,
-} from "@synapse/world";
+import type { DistrictContext, DistrictController } from "@synapse/world";
 import type { CameraController } from "@synapse/camera";
 import type { EnvironmentStateSource, FrameStateSource, FrameStatsHandler } from "@synapse/types";
 import type { UniformManager } from "@synapse/shaders";
@@ -23,6 +17,9 @@ export interface SceneRootProps {
   source: FrameStateSource;
   environmentSource: EnvironmentStateSource;
   cameraController: CameraController;
+  districtController: DistrictController;
+  bindRenderContext: (ctx: DistrictContext) => void;
+  onRenderContextReady?: () => Promise<void>;
   onStats?: FrameStatsHandler | undefined;
   themeColor: string;
 }
@@ -31,12 +28,9 @@ interface RenderSystems {
   readonly uniforms: UniformManager;
   readonly materials: MaterialFactory;
   readonly particles: ParticleEngine;
-  readonly worldRoot: WorldRoot;
-  readonly districts: DistrictManager;
-  readonly district: OriginVoidDistrict;
 }
 
-function buildSystems(
+function buildRenderSystems(
   themeColor: string,
   quality: ReturnType<FrameStateSource["read"]>["quality"],
 ): RenderSystems {
@@ -45,54 +39,60 @@ function buildSystems(
   const materials = createMaterialFactory({ standard: uniforms.uniforms, shaders });
   const particles = createParticleEngine({ standard: uniforms.uniforms });
   particles.setQuality(quality);
-  const worldRoot = createWorldRoot();
-  const districts = new DistrictManager({ worldRoot });
-  const district = createOriginVoidDistrict({ materials, particles });
-  districts.activate(district);
-  return { uniforms, materials, particles, worldRoot, districts, district };
+  return { uniforms, materials, particles };
 }
 
 export function SceneRoot({
   source,
   environmentSource,
   cameraController,
+  districtController,
+  bindRenderContext,
+  onRenderContextReady,
   onStats,
   themeColor,
 }: SceneRootProps) {
   const [systems, setSystems] = useState<RenderSystems | null>(null);
   const [postReady, setPostReady] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const built = buildSystems(themeColor, source.read().quality);
+    const built = buildRenderSystems(themeColor, source.read().quality);
     setSystems(built);
+    bindRenderContext({ materials: built.materials, particles: built.particles });
 
+    let cancelled = false;
     let secondFrame = 0;
-    const firstFrame = requestAnimationFrame(() => {
-      built.district.attachAmbient();
+
+    const readyPromise = onRenderContextReady?.() ?? Promise.resolve();
+    void readyPromise.then(() => {
+      if (cancelled) {
+        return;
+      }
+      setReady(true);
       secondFrame = requestAnimationFrame(() => setPostReady(true));
     });
 
     return () => {
-      cancelAnimationFrame(firstFrame);
+      cancelled = true;
       cancelAnimationFrame(secondFrame);
-      built.districts.dispose();
-      built.worldRoot.dispose();
       built.particles.dispose();
       built.materials.dispose();
       setSystems(null);
+      setReady(false);
       setPostReady(false);
     };
-  }, [themeColor, source]);
+  }, [themeColor, source, bindRenderContext, onRenderContextReady]);
 
-  if (!systems) {
+  if (!systems || !ready) {
     return null;
   }
 
   return (
     <>
-      <primitive object={systems.worldRoot.group} />
+      <primitive object={districtController.worldRoot.group} />
       <LightingRig
-        layers={systems.worldRoot.layers}
+        layers={districtController.worldRoot.layers}
         frameSource={source}
         environmentSource={environmentSource}
       />
@@ -101,6 +101,7 @@ export function SceneRoot({
         cameraController={cameraController}
         source={source}
         environmentSource={environmentSource}
+        districtController={districtController}
         onStats={onStats}
       />
       {postReady ? <PostProcessing quality={source.read().quality} /> : null}

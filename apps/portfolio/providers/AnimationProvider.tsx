@@ -5,7 +5,7 @@ import {
   type AnimationEngine,
   type TimelineDefinition,
 } from "@synapse/animation";
-import { createOriginVoidCameraChoreography } from "@synapse/camera";
+import { registerAllDistrictChoreographies } from "@synapse/camera";
 import { createSafeContext } from "@synapse/hooks";
 import { useEffect, useState, type ReactNode } from "react";
 import { useExperienceContext } from "./ExperienceProvider";
@@ -18,8 +18,8 @@ const [AnimationContext, useAnimationContext] =
 export { useAnimationContext };
 
 /**
- * Instantiates the Animation Engine, registers the Origin Void camera
- * choreography, and wires scroll progress to the experience store.
+ * Instantiates the Animation Engine and registers all district camera choreographies.
+ * SceneDirector scrubs the active district timeline via the animation command port.
  */
 export function AnimationProvider({ children }: { children: ReactNode }) {
   const experienceEngine = useExperienceContext();
@@ -31,13 +31,10 @@ export function AnimationProvider({ children }: { children: ReactNode }) {
       bus: experienceEngine.bus,
       getReducedMotion: () => settings.getState().reducedMotion,
       getQuality: () => experienceEngine.stores.performance.getState().qualityPreset,
-      onScrollProgress: (progress) => {
-        experienceEngine.stores.experience.getState().setStoryProgress(progress);
-        experienceEngine.bus.publish("experience.storyProgress", { progress });
-      },
     });
-    const choreography = createOriginVoidCameraChoreography(cameraController.narrativePose);
-    eng.register(choreography as TimelineDefinition);
+    registerAllDistrictChoreographies(cameraController.narrativePose, (def) => {
+      eng.register(def as TimelineDefinition);
+    });
     return eng;
   });
 

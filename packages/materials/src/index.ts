@@ -13,6 +13,15 @@ export { LIVING_FOG_FAMILY } from "./families/living-fog";
 export { VOLUMETRIC_FOG_FAMILY } from "./families/volumetric-fog";
 export { DUST_FAMILY } from "./families/dust";
 export { MATERIAL_FAMILIES } from "./families/material-families";
+export {
+  DISTRICT_MATERIAL_IDS,
+  COSMIC_MATTER_FAMILY,
+  ARCHITECTURAL_GLASS_FAMILY,
+  PRECISION_METAL_FAMILY,
+  BIOLUMINESCENT_BARK_FAMILY,
+  ETHER_LIGHT_FAMILY,
+  MEMORY_CRYSTAL_FAMILY,
+} from "./families/district-materials";
 
 export {
   ORIGIN_MATTER_TOKENS,

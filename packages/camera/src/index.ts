@@ -27,6 +27,28 @@ export {
 export {
   CameraController,
   createCameraController,
+  createDistrictCameraAdapter,
   type CameraControllerOptions,
+  type SavedCameraPose,
 } from "./controller/camera-controller";
 export { createOriginVoidCameraChoreography } from "./choreography/origin-void.choreography";
+export {
+  createDistrictCameraChoreography,
+  type DistrictCameraKeyframe,
+} from "./choreography/district-choreography";
+export {
+  createDistrictScrollChoreography,
+  registerAllDistrictChoreographies,
+} from "./choreography/district-choreographies";
+export { primaryCameraTarget, cameraPresetFromManifest } from "./profiles/district-camera-profiles";
+export {
+  CAMERA_TRANSITION_PROFILES,
+  getCameraTransitionProfile,
+  type CameraTransitionProfileId,
+} from "./transition/camera-transition-profiles";
+export {
+  CameraFlightController,
+  createCameraFlightController,
+  type CameraFlightState,
+} from "./flight/camera-flight-controller";
+export type { CameraFlightPlan, CameraCheckpoint } from "./flight/camera-flight-plan";

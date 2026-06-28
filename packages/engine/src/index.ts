@@ -25,3 +25,32 @@ export {
   type PerformanceStore,
   type PerformanceStoreState,
 } from "./stores/performance.store";
+export {
+  createNarrativeGraphRegistry,
+  type NarrativeGraphRegistry,
+} from "./narrative/narrative-graph-registry";
+export {
+  ORIGIN_VOID_NARRATIVE_GRAPH,
+  registerOriginVoidGraph,
+} from "./narrative/graphs/origin-void-narrative.graph";
+export {
+  SYNAPSE_JOURNEY_GRAPH,
+  registerSynapseJourneyGraph,
+} from "./narrative/graphs/synapse-journey.graph";
+export {
+  composeNarrativeGraph,
+  nodePair,
+  type NarrativeSegment,
+} from "./narrative/graphs/compose-narrative-graph";
+export { createNarrativeDirector, type NarrativeDirector } from "./narrative/narrative-director";
+export { createScrollDirector, type ScrollDirector } from "./scroll/scroll-director";
+export {
+  createSceneStateStore,
+  syncSceneToExperience,
+  type SceneStateStore,
+  type SceneStateStoreState,
+} from "./scene/scene-state.store";
+export { createSceneDirector, type SceneDirector } from "./scene/scene-director";
+export { createSceneDirectorBundle, type SceneDirectorBundle } from "./scene/create-scene-director";
+export { createTransitionPipeline, type TransitionPipeline } from "./scene/transition-pipeline";
+export { createLoadingStrategy, type LoadingStrategy } from "./scene/loading-strategy";

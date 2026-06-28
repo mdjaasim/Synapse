@@ -9,3 +9,5 @@ export { useAnalyticsContext } from "./AnalyticsProvider";
 export { useCameraContext } from "./CameraProvider";
 export { useAnimationContext } from "./AnimationProvider";
 export { useEnvironmentContext } from "./EnvironmentProvider";
+export { useDistrictContext, DistrictProviderFromEngine } from "./DistrictProvider";
+export { useSceneDirectorContext, SceneDirectorProvider } from "./SceneDirectorProvider";

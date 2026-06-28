@@ -19,7 +19,7 @@ export function createOriginVoidCameraChoreography(narrativePose: CameraPoseStat
     interruptible: true,
     reversible: true,
     performanceCost: "low" as const,
-    scrollBound: true,
+    scrollBound: false,
     target: narrativePose as unknown as Record<string, unknown>,
     keyframes: [
       {

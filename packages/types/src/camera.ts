@@ -19,3 +19,10 @@ export interface CameraState {
   readonly transition: CameraTransition;
   readonly activeCinematicId: string | null;
 }
+
+/** Immutable camera pose snapshot for checkpoints and flight plans. */
+export interface CameraPoseSnapshot {
+  readonly position: Vec3;
+  readonly target: Vec3;
+  readonly fov: number;
+}

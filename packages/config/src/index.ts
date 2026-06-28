@@ -7,3 +7,4 @@
 export * from "./theme";
 export * from "./feature-flags";
 export * from "./constants";
+export * from "./portfolio-content";

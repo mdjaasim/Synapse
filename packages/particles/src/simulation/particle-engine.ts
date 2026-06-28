@@ -41,32 +41,51 @@ export class ParticleEngine {
 
   /** Builds Origin Void particle systems and returns them for world mounting. */
   createOriginVoidSystems(): readonly ParticleSystem[] {
-    const atmosphereCount = scaledCount(500, this.#quality, ORIGIN_VOID_PARTICLE_CAPS);
-    const energyCount = scaledCount(100, this.#quality, ORIGIN_VOID_ENERGY_CAPS);
+    return this.createAtmosphereSystems("origin", 500, 16, 1337, "#8a9ec8");
+  }
 
-    const systems: ParticleSystem[] = [];
-
-    if (atmosphereCount > 0) {
-      systems.push(
-        this.#createSystem(
-          "origin:particles:atmosphere",
-          createAtmosphereParticleMaterial({ standard: this.#standard }),
-          { count: atmosphereCount, radius: 16, seed: 1337 },
-        ),
-      );
+  /** Generic atmosphere particles for portfolio districts. */
+  createAtmosphereSystems(
+    districtId: string,
+    baseCount: number,
+    radius: number,
+    seed: number,
+    color = "#8a9ec8",
+  ): readonly ParticleSystem[] {
+    const count = scaledCount(baseCount, this.#quality, ORIGIN_VOID_PARTICLE_CAPS);
+    if (count <= 0) {
+      return [];
     }
+    return [
+      this.#createSystem(
+        `${districtId}:particles:atmosphere`,
+        createAtmosphereParticleMaterial({
+          standard: this.#standard,
+          color: new THREE.Color(color),
+        }),
+        { count, radius, seed },
+      ),
+    ];
+  }
 
-    if (energyCount > 0) {
-      systems.push(
-        this.#createSystem(
-          "origin:particles:energy",
-          createEnergyParticleMaterial({ standard: this.#standard }),
-          { count: energyCount, radius: 12, seed: 4242, radialFlow: true },
-        ),
-      );
+  /** Energy flow particles for engineering and AI districts. */
+  createEnergySystems(
+    districtId: string,
+    baseCount: number,
+    radius: number,
+    seed: number,
+  ): readonly ParticleSystem[] {
+    const count = scaledCount(baseCount, this.#quality, ORIGIN_VOID_ENERGY_CAPS);
+    if (count <= 0) {
+      return [];
     }
-
-    return systems;
+    return [
+      this.#createSystem(
+        `${districtId}:particles:energy`,
+        createEnergyParticleMaterial({ standard: this.#standard }),
+        { count, radius, seed, radialFlow: true },
+      ),
+    ];
   }
 
   setQuality(quality: QualityPreset): void {

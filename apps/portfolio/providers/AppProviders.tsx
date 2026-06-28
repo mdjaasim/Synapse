@@ -13,6 +13,8 @@ import { QueryProvider } from "./QueryProvider";
 import { ScrollProvider } from "./ScrollProvider";
 import { StoresProvider } from "./StoresProvider";
 import { ThemeProvider } from "./ThemeProvider";
+import { DistrictProviderFromEngine } from "./DistrictProvider";
+import { SceneDirectorProvider } from "./SceneDirectorProvider";
 
 /**
  * Composes every application provider in dependency order.
@@ -23,21 +25,25 @@ export function AppProviders({ children }: { children: ReactNode }) {
       <ExperienceProvider>
         <StoresProvider>
           <CameraProvider>
-            <AnimationProvider>
-              <EnvironmentProvider>
-                <ScrollProvider>
-                  <ThemeProvider>
-                    <AccessibilityProvider>
-                      <PerformanceProvider>
-                        <AIProvider>
-                          <AnalyticsProvider>{children}</AnalyticsProvider>
-                        </AIProvider>
-                      </PerformanceProvider>
-                    </AccessibilityProvider>
-                  </ThemeProvider>
-                </ScrollProvider>
-              </EnvironmentProvider>
-            </AnimationProvider>
+            <DistrictProviderFromEngine>
+              <AnimationProvider>
+                <SceneDirectorProvider>
+                  <EnvironmentProvider>
+                    <ScrollProvider>
+                      <ThemeProvider>
+                        <AccessibilityProvider>
+                          <PerformanceProvider>
+                            <AIProvider>
+                              <AnalyticsProvider>{children}</AnalyticsProvider>
+                            </AIProvider>
+                          </PerformanceProvider>
+                        </AccessibilityProvider>
+                      </ThemeProvider>
+                    </ScrollProvider>
+                  </EnvironmentProvider>
+                </SceneDirectorProvider>
+              </AnimationProvider>
+            </DistrictProviderFromEngine>
           </CameraProvider>
         </StoresProvider>
       </ExperienceProvider>

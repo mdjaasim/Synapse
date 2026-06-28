@@ -39,18 +39,25 @@ export class AnimationEngine {
   readonly #bus: SynapseEventBus;
   readonly #controllers = new Map<string, TimelineController>();
   readonly #definitions = new Map<string, TimelineDefinition>();
+  #scrollProgressHandler: ((progress: number) => void) | undefined;
 
   constructor({ bus, getReducedMotion, onScrollProgress }: AnimationEngineOptions) {
     initGsapRuntime();
     this.#bus = bus;
     this.registry = createAnimationRegistry();
     this.budget = createAnimationBudget();
+    this.#scrollProgressHandler = onScrollProgress;
     this.scroll = createScrollOrchestrator({
       onProgress: (progress) => {
-        onScrollProgress?.(progress);
+        this.#scrollProgressHandler?.(progress);
       },
       getReducedMotion,
     });
+  }
+
+  /** Replaces the scroll progress reporter (wired by SceneDirectorProvider). */
+  setScrollProgressHandler(handler: (progress: number) => void): void {
+    this.#scrollProgressHandler = handler;
   }
   register(def: TimelineDefinition): TimelineController {
     const existing = this.#controllers.get(def.id);

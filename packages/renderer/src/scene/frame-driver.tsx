@@ -6,12 +6,14 @@ import * as THREE from "three";
 import type { EnvironmentStateSource, FrameStateSource, FrameStatsHandler } from "@synapse/types";
 import type { UniformManager } from "@synapse/shaders";
 import type { CameraController } from "@synapse/camera";
+import type { DistrictController } from "@synapse/world";
 
 export interface FrameDriverProps {
   uniforms: UniformManager;
   cameraController: CameraController;
   source: FrameStateSource;
   environmentSource: EnvironmentStateSource;
+  districtController: DistrictController;
   onStats?: FrameStatsHandler | undefined;
 }
 
@@ -25,6 +27,7 @@ export function FrameDriver({
   cameraController,
   source,
   environmentSource,
+  districtController,
   onStats,
 }: FrameDriverProps) {
   const camera = useThree((state) => state.camera);
@@ -50,6 +53,7 @@ export function FrameDriver({
 
     const distance = Math.hypot(camera.position.x, camera.position.y, camera.position.z);
     uniforms.update({ frame: { ...dynamic, elapsed, delta: dt }, environment, distance });
+    districtController.update(dt);
 
     if (onStats) {
       const s = sampler.current;

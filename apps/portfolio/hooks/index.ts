@@ -5,3 +5,5 @@ export { useAnalyticsStore } from "./use-analytics";
 export { useTheme } from "./use-theme";
 export { useAccessibility } from "./use-accessibility";
 export { useAnimationEngine } from "./use-animation";
+export { useScene } from "./use-scene";
+export { useDistrict } from "./use-district";

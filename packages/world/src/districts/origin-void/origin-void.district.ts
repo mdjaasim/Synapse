@@ -3,31 +3,44 @@ import { createOriginCore } from "./origin-core";
 import { createAtmosphereField } from "./atmosphere-field";
 import { createVolumetricFogField } from "./volumetric-fog-field";
 import { createSceneObject } from "../../objects/scene-object";
-import type { District, DistrictContext, DistrictMetadata } from "../district";
+import { createDistrictManifest } from "../district-manifest";
+import type { DistrictRegistration } from "../district-registry";
+import type {
+  BaseDistrict,
+  DistrictAnimationContext,
+  DistrictContext,
+  DistrictInteractionContext,
+} from "../base-district";
 import type { SceneObject } from "../../objects/scene-object";
 
-const METADATA: DistrictMetadata = {
+export const ORIGIN_VOID_MANIFEST = createDistrictManifest({
+  id: "origin",
   name: "Origin Void",
   mood: "calm",
   description:
     "The conceptual center of the universe (0,0,0): a calm, near-dark space from which everything originates.",
-};
-
-export interface OriginVoidDistrict extends District {
-  /**
-   * Mounts the deferred ambient layers (sky, fog, particles). Called after the
-   * first paint so the core appears as fast as possible (incremental startup).
-   */
-  attachAmbient(): void;
-}
+  developerLabel: "OriginVoid",
+  center: { x: 0, y: 0, z: 0 },
+  radius: 20,
+  cameraPosition: { x: 0, y: 0.6, z: 6 },
+  cameraTarget: { x: 0, y: 0, z: 0 },
+  fov: 42,
+  loadingPriority: 100,
+  memoryBudgetBytes: 2_048_000,
+  streamingPolicy: { tier: "critical", preloadAdjacent: false, unloadWhenDormant: false },
+  transitionPreferences: {
+    preferred: "fade",
+    allowed: ["fade", "crossfade", "blackout"],
+    cameraProfileId: "instant",
+  },
+});
 
 /**
- * Builds the Origin Void district. The hero core is attached immediately; the
- * layered atmosphere is deferred via {@link OriginVoidDistrict.attachAmbient}.
- *
- * Mount order: sky dome → volumetric fog → atmosphere particles → energy particles.
+ * Builds the Origin Void district. Core mounts immediately; ambient layers
+ * mount on first {@link BaseDistrict.mount} call (deferred startup preserved).
  */
-export function createOriginVoidDistrict(ctx: DistrictContext): OriginVoidDistrict {
+export function createOriginVoidDistrict(ctx: DistrictContext): BaseDistrict {
+  const manifest = ORIGIN_VOID_MANIFEST;
   const group = new THREE.Group();
   group.name = "district:origin";
   const children: SceneObject[] = [];
@@ -37,12 +50,13 @@ export function createOriginVoidDistrict(ctx: DistrictContext): OriginVoidDistri
   children.push(core);
 
   let ambientAttached = false;
+  let mounted = false;
+
   const attachAmbient = (): void => {
     if (ambientAttached) {
       return;
     }
     ambientAttached = true;
-
     const atmosphere = createAtmosphereField(ctx.materials);
     const fog = createVolumetricFogField(ctx.materials);
     group.add(atmosphere.object3d, fog.object3d);
@@ -63,12 +77,37 @@ export function createOriginVoidDistrict(ctx: DistrictContext): OriginVoidDistri
     }
   };
 
-  return {
+  const district: BaseDistrict = {
     id: "district:origin",
     object3d: group,
     districtId: "origin",
-    metadata: METADATA,
-    attachAmbient,
+    manifest,
+
+    async prepare() {},
+
+    mount() {
+      mounted = true;
+      if (!ambientAttached) {
+        requestAnimationFrame(() => attachAmbient());
+      }
+    },
+
+    unmount() {
+      mounted = false;
+    },
+
+    update(_delta: number) {
+      if (!mounted) {
+        return;
+      }
+    },
+
+    enter() {},
+    exit() {},
+
+    registerAnimations(_ctx: DistrictAnimationContext) {},
+    registerInteractions(_ctx: DistrictInteractionContext) {},
+
     dispose() {
       for (const child of children) {
         child.dispose();
@@ -76,4 +115,14 @@ export function createOriginVoidDistrict(ctx: DistrictContext): OriginVoidDistri
       children.length = 0;
     },
   };
+
+  return district;
 }
+
+export const ORIGIN_VOID_REGISTRATION: DistrictRegistration = {
+  manifest: ORIGIN_VOID_MANIFEST,
+  create: createOriginVoidDistrict,
+};
+
+/** @deprecated Use {@link createOriginVoidDistrict} returning {@link BaseDistrict}. */
+export type OriginVoidDistrict = BaseDistrict;
